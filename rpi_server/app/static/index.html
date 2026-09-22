@@ -1,0 +1,108 @@
+<!DOCTYPE html>
+<html lang="sk">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Meteostanica · Domov</title>
+<link rel="stylesheet" href="/static/style.css">
+</head>
+<body>
+
+<header class="topbar">
+  <div class="topbar-title">
+    <span class="cloud">☁</span>
+    <div>
+      <h1>Meteostanica</h1>
+      <p id="statusLine" class="status-line">Pripájam sa...</p>
+    </div>
+  </div>
+  <div class="topbar-clock">
+    <span id="clockTime">--:--:--</span>
+    <span id="clockDate">--.--.----</span>
+  </div>
+</header>
+
+<main>
+
+  <section class="hero">
+    <div class="hero-primary">
+      <span class="hero-label">Teplota</span>
+      <span id="tempValue" class="hero-value temp">--.-<small>°C</small></span>
+      <span id="tempMinMax" class="hero-sub">MIN --.- · MAX --.-</span>
+    </div>
+    <div class="hero-secondary">
+      <div class="metric">
+        <span class="metric-label">Vlhkosť</span>
+        <span id="humValue" class="metric-value hum">--.-<small>%</small></span>
+      </div>
+      <div class="metric">
+        <span class="metric-label">Tlak</span>
+        <span id="pressValue" class="metric-value press">--.-<small>hPa</small></span>
+      </div>
+      <div class="metric">
+        <span class="metric-label">Trend tlaku</span>
+        <span id="trendValue" class="metric-value trend">Zbieram dáta...</span>
+        <span id="trendDetail" class="metric-sub"></span>
+      </div>
+    </div>
+  </section>
+
+  <section class="pill-row">
+    <div id="aqPill" class="pill">Kvalita ovzdušia: --</div>
+    <div id="battPill" class="pill pill-muted" style="display:none">Batéria: --</div>
+  </section>
+
+  <section class="card">
+    <div class="card-head">
+      <h2>Teplota a vlhkosť</h2>
+      <div class="range-buttons" id="rangeButtons">
+        <button data-hours="8" class="active">8h</button>
+        <button data-hours="24">24h</button>
+        <button data-hours="72">3 dni</button>
+        <button data-hours="168">7 dní</button>
+      </div>
+    </div>
+    <canvas id="chartTempHum" height="110"></canvas>
+  </section>
+
+  <section class="card">
+    <h2>Posledných 7 dní</h2>
+    <div id="dailyRows" class="daily-rows"></div>
+  </section>
+
+  <section class="card">
+    <h2>Nastavenia</h2>
+    <div class="settings-row">
+      <div class="settings-field">
+        <label for="inpAltitude">Výška (m)</label>
+        <input type="number" id="inpAltitude" step="1" placeholder="0">
+      </div>
+      <div class="settings-field">
+        <label for="inpRefPressure">Ref. tlak (hPa)</label>
+        <input type="number" id="inpRefPressure" step="0.01" placeholder="1013.25">
+      </div>
+      <button id="btnSaveSettings" class="btn-primary">Uložiť</button>
+    </div>
+    <p class="settings-hint">Výška opraví kartu "Tlak" (prepočet na hladinu mora). Bez zadanej výšky appka zobrazuje surový tlak zo senzora nezmenený.</p>
+    <p id="settingsMsg" class="settings-msg"></p>
+  </section>
+
+  <section class="card">
+    <div class="card-head">
+      <h2>Alarmy kvality ovzdušia</h2>
+      <button id="btnClearAlarms" class="btn-ghost">Vymazať</button>
+    </div>
+    <table class="alarm-table">
+      <thead>
+        <tr><th>Čas</th><th>Príčina</th><th>Teplota</th><th>Vlhkosť</th><th>Tlak</th><th>TVOC</th></tr>
+      </thead>
+      <tbody id="alarmRows"></tbody>
+    </table>
+  </section>
+
+</main>
+
+<script src="https://cdnjs.cloudflare.com/ajax/libs/Chart.js/4.4.0/chart.umd.min.js"></script>
+<script src="/static/app.js"></script>
+</body>
+</html>

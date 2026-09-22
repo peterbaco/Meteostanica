@@ -1,0 +1,16 @@
+[Unit]
+Description=Meteostanica server (FastAPI)
+After=network-online.target
+Wants=network-online.target
+
+[Service]
+Type=simple
+# UPRAV cestu podľa toho, kam si projekt na RPi5 skopíroval:
+WorkingDirectory=/home/pi/rpi_server
+ExecStart=/home/pi/rpi_server/venv/bin/uvicorn app.main:app --host 0.0.0.0 --port 8000
+Restart=on-failure
+RestartSec=5
+User=pi
+
+[Install]
+WantedBy=multi-user.target
