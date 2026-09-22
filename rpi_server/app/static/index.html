@@ -1,0 +1,149 @@
+<!DOCTYPE html>
+<html lang="sk">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Meteostanica · Domov</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@400;500;600;700&family=JetBrains+Mono:wght@400;500;600;700&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="/static/style.css">
+</head>
+<body>
+
+<div class="app-shell">
+
+  <nav class="sidebar" id="sidebar">
+    <div class="sidebar-head">
+      <div class="mark" id="sidebarToggle">☁</div>
+      <div class="title">Meteostanica</div>
+    </div>
+
+    <div class="nav-item active" data-page="current"><span class="icon">🏠</span><span class="label">Aktuálne údaje</span></div>
+    <div class="nav-item" data-page="stats"><span class="icon">📊</span><span class="label">Štatistiky a grafy</span></div>
+    <div class="nav-item" data-page="alarms"><span class="icon">🔔</span><span class="label">Alarmy</span><span class="badge" id="alarmBadge" style="display:none">0</span></div>
+    <div class="nav-item" data-page="settings"><span class="icon">⚙</span><span class="label">Nastavenia</span></div>
+
+    <div class="sidebar-bottom">
+      <div class="live-pill" id="livePill"><span class="dot"></span><span id="liveText">Pripájam sa...</span></div>
+    </div>
+  </nav>
+
+  <div class="main-area">
+    <div class="topbar">
+      <div>
+        <h2 id="pageTitle">Aktuálne údaje</h2>
+        <div class="sub" id="pageSub">Čakám na prvú vzorku...</div>
+      </div>
+      <div class="topbar-clock">
+        <div class="time" id="clockTime">--:--:--</div>
+        <div class="date" id="clockDate">--.--.----</div>
+      </div>
+    </div>
+
+    <!-- ================= AKTUÁLNE ÚDAJE ================= -->
+    <div class="page active" id="page-current">
+      <section class="hero" id="heroSection">
+        <div class="hero-body">
+          <div class="dial-wrap">
+            <svg viewBox="0 0 168 168">
+              <defs>
+                <linearGradient id="dialGrad" x1="0%" y1="0%" x2="100%" y2="100%">
+                  <stop offset="0%" stop-color="#4FC3F7"/><stop offset="100%" stop-color="#FF7A59"/>
+                </linearGradient>
+              </defs>
+              <circle cx="84" cy="84" r="72" stroke="#ffffff20" stroke-width="10" fill="none"/>
+              <circle id="dialArc" cx="84" cy="84" r="72" stroke="url(#dialGrad)" stroke-width="10" fill="none"
+                      stroke-linecap="round" stroke-dasharray="452.4" stroke-dashoffset="452.4"/>
+            </svg>
+            <div class="dial-center">
+              <div class="dial-value" id="dialValue">--.-<small>°C</small></div>
+              <div class="dial-label">Teplota</div>
+            </div>
+          </div>
+
+          <div class="hero-summary">
+            <p class="headline" id="comfortHeadline">Zbieram dáta...</p>
+            <p class="sub" id="comfortDetail"></p>
+            <div class="minmax-track">
+              <div class="minmax-labels"><span id="todayMin">MIN --.-°C</span><span id="todayMax">MAX --.-°C</span></div>
+              <div class="minmax-bar"><div class="fill"></div><div class="now" id="minmaxNow"></div></div>
+            </div>
+          </div>
+        </div>
+
+        <div class="strip">
+          <div class="instrument" id="instHum"><div class="i-label">Vlhkosť</div><div class="i-value" id="humValue">--.-%</div><div class="i-sub" id="humSub">—</div></div>
+          <div class="instrument" id="instPress"><div class="i-label">Tlak</div><div class="i-value" id="pressValue">--.-<span style="font-size:11px">hPa</span></div><div class="i-sub" id="trendSub">Zbieram dáta...</div></div>
+          <div class="instrument" id="instAir"><div class="i-label">Ovzdušie</div><div class="i-value" id="airValue">--</div><div class="i-sub" id="airSub">—</div></div>
+          <div class="instrument" id="instSun"><div class="i-label">Slnko</div><div class="i-value" id="sunValue">--:--<span style="font-size:11px">–--:--</span></div><div class="i-sub" id="sunSub">—</div></div>
+          <div class="instrument" id="instBatt" style="display:none"><div class="i-label">Batéria</div><div class="i-value" id="battValue">--%</div><div class="i-sub" id="battSub">—</div></div>
+        </div>
+
+        <div class="comfort-banner" id="comfortBanner">
+          <span class="emoji" id="comfortEmoji">⏳</span>
+          <div class="txt"><strong id="comfortLabel">Zbieram dáta...</strong><span id="comfortSub"></span></div>
+        </div>
+      </section>
+    </div>
+
+    <!-- ================= ŠTATISTIKY A GRAFY ================= -->
+    <div class="page" id="page-stats">
+      <div class="block">
+        <div class="block-head"><h3>Posledných 7 dní</h3><span class="hint">klik na deň zobrazí priemer/min/max</span></div>
+        <div class="card">
+          <div class="week-row" id="weekRow"></div>
+          <p class="week-detail" id="weekDetail"></p>
+        </div>
+      </div>
+      <div class="block">
+        <div class="block-head">
+          <h3>Teplota a vlhkosť</h3>
+          <div class="range-buttons" id="rangeButtons">
+            <button data-hours="8" class="active">8h</button>
+            <button data-hours="24">24h</button>
+            <button data-hours="72">3 dni</button>
+            <button data-hours="168">7 dní</button>
+          </div>
+        </div>
+        <div class="card"><div class="chart-canvas-wrap"><canvas id="chartTempHum"></canvas></div></div>
+      </div>
+    </div>
+
+    <!-- ================= ALARMY ================= -->
+    <div class="page" id="page-alarms">
+      <div class="block">
+        <div class="block-head"><h3>Alarmy kvality ovzdušia</h3><button id="btnClearAlarms" class="btn-ghost">Vymazať</button></div>
+        <div class="card" style="padding:6px 8px">
+          <table class="alarm-table">
+            <thead><tr><th>Čas</th><th>Príčina</th><th>Teplota</th><th>Vlhkosť</th><th>Tlak</th><th>TVOC</th></tr></thead>
+            <tbody id="alarmRows"></tbody>
+          </table>
+          <p class="empty-hint" id="alarmsEmptyHint" style="display:none">Zatiaľ žiadne alarmy.</p>
+        </div>
+      </div>
+    </div>
+
+    <!-- ================= NASTAVENIA ================= -->
+    <div class="page" id="page-settings">
+      <div class="block">
+        <div class="block-head"><h3>Výška a tlak</h3></div>
+        <div class="card">
+          <div class="settings-row">
+            <div class="settings-field"><label for="inpAltitude">Výška (m)</label><input type="number" id="inpAltitude" step="1" placeholder="0"></div>
+            <div class="settings-field"><label for="inpRefPressure">Ref. tlak (hPa)</label><input type="number" id="inpRefPressure" step="0.01" placeholder="1013.25"></div>
+            <button id="btnSaveSettings" class="btn-primary">Uložiť</button>
+          </div>
+          <p class="settings-hint">Výška opraví kartu "Tlak" (prepočet na hladinu mora). Bez zadanej výšky appka zobrazuje surový tlak zo senzora nezmenený.</p>
+          <p id="settingsMsg" class="settings-msg"></p>
+        </div>
+      </div>
+    </div>
+
+  </div>
+</div>
+
+<script src="https://cdnjs.cloudflare.com/ajax/libs/Chart.js/4.4.0/chart.umd.min.js"></script>
+<script src="/static/app.js"></script>
+</body>
+</html>
